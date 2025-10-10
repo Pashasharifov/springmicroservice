@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: ms-product
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ms-product
+    username: postgres
+    password: admin
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    contexts: development
+    drop-first: false
+
+server:
+  port: 8080
