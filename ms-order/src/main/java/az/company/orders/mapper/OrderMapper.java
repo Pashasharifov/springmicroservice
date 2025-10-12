@@ -16,7 +16,7 @@ public enum OrderMapper {
         return OrderEntity.builder()
                 .productId(createOrderRequest.getProductId())
                 .quantity(createOrderRequest.getQuantity())
-                .amount(createOrderRequest.getAmount())
+//                .amount(createOrderRequest.getAmount())
                 .status(PENDING)
                 .createdAt(now())
                 .build();
