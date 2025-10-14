@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: ms-payment
+  datasource:
+    url: jdbc:postgresql://127.0.0.1:5431/ms-payment
+    username: postgres
+    password: admin
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+server:
+  port: 8082
