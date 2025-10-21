@@ -1,6 +1,8 @@
 package az.company.payments.controller;
 
+import az.company.payments.mapper.PaymentMapper;
 import az.company.payments.model.request.CreatePaymentRequest;
+import az.company.payments.model.response.PaymentResponse;
 import az.company.payments.service.abstraction.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,7 +18,7 @@ public class PaymentController {
 
     @PostMapping
     @ResponseStatus(CREATED)
-    public void pay(@RequestBody CreatePaymentRequest createPaymentRequest){
-        paymentService.pay(createPaymentRequest);
+    public PaymentResponse pay(@RequestBody CreatePaymentRequest createPaymentRequest){
+        return paymentService.pay(createPaymentRequest);
     }
 }

@@ -3,6 +3,7 @@ package az.company.payments.service.concrete;
 import az.company.payments.dao.repository.PaymentRepository;
 import az.company.payments.mapper.PaymentMapper;
 import az.company.payments.model.request.CreatePaymentRequest;
+import az.company.payments.model.response.PaymentResponse;
 import az.company.payments.service.abstraction.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,9 +16,10 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepository;
 
     @Override
-    public void pay(CreatePaymentRequest createPaymentRequest) {
+    public PaymentResponse pay(CreatePaymentRequest createPaymentRequest) {
         var paymentEntity = PAYMENT_MAPPER.buildPaymentEntity(createPaymentRequest);
         paymentRepository.save(paymentEntity);
+        return new PaymentResponse(paymentEntity.getId());
     }
 
     @Override
