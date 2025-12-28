@@ -1,5 +1,6 @@
 package az.company.orders.model.response;
 
+import az.company.orders.model.client.response.ProductResponse;
 import az.company.orders.model.enums.OrderStatus;
 import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
@@ -23,4 +24,5 @@ public class OrderResponse {
     private OrderStatus status;
     private BigDecimal amount;
     private LocalDateTime createdAt;
+    private ProductResponse product;
 }
