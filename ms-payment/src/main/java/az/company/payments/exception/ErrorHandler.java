@@ -1,4 +1,4 @@
-package az.company.orders.exception;
+package az.company.payments.exception;
 
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;

@@ -67,8 +67,11 @@ public class OrderServiceHandler implements OrderService {
         var orderEntity =  orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(
                         format(ErrorMessage.ORDER_NOT_FOUND.getMessage(), id)));
+        logger.info("order entity : {}", orderEntity.getId());
         var productResponse = productClient.getProductById(orderEntity.getProductId());
+        logger.info("product : {}", productResponse);
         var paymentResponse = paymentClient.getPaymentByOrderId(orderEntity.getId());
+        logger.info("payment : {}", paymentResponse);
         return ORDER_MAPPER.buildOrderResponse(
                 orderEntity,
                 productResponse,

@@ -3,6 +3,7 @@ package az.company.payments.mapper;
 import az.company.payments.dao.entity.PaymentEntity;
 import az.company.payments.model.enums.PaymentStatus;
 import az.company.payments.model.request.CreatePaymentRequest;
+import az.company.payments.model.response.PaymentResponse;
 
 import java.time.LocalDateTime;
 
@@ -19,6 +20,14 @@ public enum PaymentMapper {
                 .referenceNumber(createPaymentRequest.getReferenceNumber())
                 .amount(createPaymentRequest.getAmount())
                 .createdAt(now())
+                .build();
+    }
+    public PaymentResponse buildPaymentResponse(PaymentEntity paymentEntity){
+        return PaymentResponse.builder()
+                .id(paymentEntity.getId())
+                .createdAt(paymentEntity.getCreatedAt())
+                .status(paymentEntity.getStatus())
+                .paymentType(paymentEntity.getPaymentType())
                 .build();
     }
 }

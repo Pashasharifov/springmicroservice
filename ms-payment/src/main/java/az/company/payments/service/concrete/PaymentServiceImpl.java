@@ -1,6 +1,7 @@
 package az.company.payments.service.concrete;
 
 import az.company.payments.dao.repository.PaymentRepository;
+import az.company.payments.exception.NotFoundException;
 import az.company.payments.mapper.PaymentMapper;
 import az.company.payments.model.request.CreatePaymentRequest;
 import az.company.payments.model.response.PaymentResponse;
@@ -19,7 +20,16 @@ public class PaymentServiceImpl implements PaymentService {
     public PaymentResponse pay(CreatePaymentRequest createPaymentRequest) {
         var paymentEntity = PAYMENT_MAPPER.buildPaymentEntity(createPaymentRequest);
         paymentRepository.save(paymentEntity);
-        return new PaymentResponse(paymentEntity.getId());
+        return PAYMENT_MAPPER.buildPaymentResponse(paymentEntity);
+    }
+
+    @Override
+    public PaymentResponse getPaymentByOrderId(Long orderId) {
+        return paymentRepository.findByOrderId(orderId)
+                .map((PAYMENT_MAPPER::buildPaymentResponse))
+                .orElseThrow(()->new NotFoundException(
+                        "Payment not found by order id: " + orderId
+                ));
     }
 
     @Override
