@@ -1,6 +1,7 @@
 package az.company.orders.mapper;
 
 import az.company.orders.dao.entity.OrderEntity;
+import az.company.orders.model.client.response.PaymentResponse;
 import az.company.orders.model.client.response.ProductResponse;
 import az.company.orders.model.enums.OrderStatus;
 import az.company.orders.model.request.CreateOrderRequest;
@@ -24,7 +25,7 @@ public enum OrderMapper {
     }
 
     public OrderResponse buildOrderResponse(OrderEntity orderEntity,
-                                            ProductResponse productResponse){
+                                            ProductResponse productResponse, PaymentResponse paymentResponse){
         return OrderResponse.builder()
                 .id(orderEntity.getId())
                 .productId(orderEntity.getProductId())
@@ -33,6 +34,7 @@ public enum OrderMapper {
                 .status(orderEntity.getStatus())
                 .createdAt(orderEntity.getCreatedAt())
                 .product(productResponse)
+                .payment(paymentResponse)
                 .build();
     }
 }

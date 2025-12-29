@@ -1,5 +1,6 @@
 package az.company.orders.model.response;
 
+import az.company.orders.model.client.response.PaymentResponse;
 import az.company.orders.model.client.response.ProductResponse;
 import az.company.orders.model.enums.OrderStatus;
 import jakarta.persistence.Enumerated;
@@ -25,4 +26,5 @@ public class OrderResponse {
     private BigDecimal amount;
     private LocalDateTime createdAt;
     private ProductResponse product;
+    private PaymentResponse payment;
 }
