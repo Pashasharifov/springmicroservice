@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(
         name = "ms-product",
-        url = "http://127.0.0.1:8080/v1/products",
+        url = "http://127.0.0.1:8083/v1/products",
         configuration = CustomErrorDescoder.class
 )
 public interface ProductClient {

@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.Objects;
+
 import static org.springframework.http.HttpStatus.*;
 
 @RestControllerAdvice
@@ -21,7 +23,7 @@ public class ErrorHandler {
     @ResponseStatus(BAD_REQUEST)
     public ErrorResponse handle(MethodArgumentNotValidException exception){
         return ErrorResponse.builder()
-                .message(exception.getBindingResult().getFieldError().getDefaultMessage())
+                .message(Objects.requireNonNull(exception.getBindingResult().getFieldError()).getDefaultMessage())
                 .build();
     }
 

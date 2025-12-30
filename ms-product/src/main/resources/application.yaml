@@ -5,7 +5,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/ms-product
     username: postgres
-    password: admin
+    password: pasha
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -20,4 +20,4 @@ spring:
     drop-first: false
 
 server:
-  port: 8080
+  port: 8083
