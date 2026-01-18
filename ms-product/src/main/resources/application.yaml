@@ -18,12 +18,18 @@ spring:
     change-log: classpath:db/changelog/db.changelog-master.yaml
     contexts: development
     drop-first: false
+  config:
+    import: configserver:http://localhost:8888
 
 server:
   port: 8083
-eureka:
-  instance:
-    prefer-ip-address: true
-  client:
-    service-url:
-      defaultZone: ${EUREKA_SERVER_ADDRESS:http://localhost:8761/eureka}
+management:
+  tracing:
+    sampling:
+      probability: 0.0
+#eureka:
+#  instance:
+#    prefer-ip-address: true
+#  client:
+#    service-url:
+#      defaultZone: ${EUREKA_SERVER_ADDRESS:http://localhost:8761/eureka}
