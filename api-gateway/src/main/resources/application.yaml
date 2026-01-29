@@ -1,0 +1,33 @@
+server:
+  port: 9090
+spring:
+  main:
+    web-application-type: reactive
+  application:
+    name: api-gateway
+  config:
+    import: configserver:http://localhost:8888
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: ms-product
+          uri: http://localhost:9999
+          predicates:
+            - Path=/products/**
+          filters:
+            - RewritePath=/products/?(?<segment>.*), /&{segment}
+        - id: ms-order
+          uri: http://localhost:8081
+          predicates:
+            - Path=/orders/**
+          filters:
+            - RewritePath=/orders/?(?<segment>.*), /&{segment}
+        - id: ms-payment
+          uri: http://localhost:9999
+          predicates:
+            - Path=/payments/**
+          filters:
+            - RewritePath=/payments/?(?<segment>.*), /&{segment}
