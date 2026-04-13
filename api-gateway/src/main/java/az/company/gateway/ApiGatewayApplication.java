@@ -24,11 +24,11 @@ public class ApiGatewayApplication {
                 .route("ms-order", r -> r
                         .path("/orders/**")
                         .filters(f -> f.stripPrefix(1))
-                        .uri("http://localhost:8081"))
+                        .uri("lb://ms-order"))
                 .route("ms-payment", r -> r
                         .path("/payments/**")
                         .filters(f -> f.stripPrefix(1))
-                        .uri("http://localhost:8082"))
+                        .uri("lb://ms-payment"))
                 .build();
     }
 

@@ -18,6 +18,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -36,27 +37,58 @@ public class OrderServiceHandler implements OrderService {
     private final OrderRepository orderRepository;
     private final ProductClient productClient;
     private final PaymentClient paymentClient;
+    private final CircuitBreakerFactory circuitBreakerFactory;
     private static final Logger logger = LoggerFactory.getLogger(OrderServiceHandler.class);
 
     @Override
     @Transactional
     public void createOrder(CreateOrderRequest createOrderRequest){
         var orderEntity = ORDER_MAPPER.buildOrderEntity(createOrderRequest);
-        var productResponse = productClient.getProductById(createOrderRequest.getProductId());
-        var reduceQuantityRequest = new ReduceQuantityRequest(
-          createOrderRequest.getProductId(),
-          createOrderRequest.getQuantity()
+//        var productResponse = productClient.getProductById(createOrderRequest.getProductId());
+        var productResponse = circuitBreakerFactory.create("productService").run(
+                () -> productClient.getProductById(createOrderRequest.getProductId()),
+                throwable -> {
+                    logger.error("Product service is down: {}", throwable.getMessage());
+                    throw new CustomFeignException("Product servisi failed");
+                }
         );
+
+//        var reduceQuantityRequest = new ReduceQuantityRequest(
+//          createOrderRequest.getProductId(),
+//          createOrderRequest.getQuantity()
+//        );
         var totalAmount =  productResponse.getPrice().multiply(valueOf(createOrderRequest.getQuantity()));
         orderEntity.setAmount(totalAmount);
         orderRepository.save(orderEntity);
 
         try {
-        productClient.reduceQuantity(reduceQuantityRequest);
-        var pay = paymentClient.pay(PAYMENT_MAPPER.buildCreatePaymentRequest(createOrderRequest, orderEntity, totalAmount));
-        orderEntity.setStatus(APPROVED);
+            circuitBreakerFactory.create("productService").run(
+                    () -> {
+                        productClient.reduceQuantity(
+                                new ReduceQuantityRequest(
+                                        createOrderRequest.getProductId(),
+                                        createOrderRequest.getQuantity()
+                                )
+                        );
+                        return null;
+                    },
+                    throwable -> {
+                        logger.error("Reduce quantity failed : {}", throwable.getMessage());
+                        throw new CustomFeignException("Reduce quantity failed");
+                    }
+            );
+//        productClient.reduceQuantity(reduceQuantityRequest);
+//        var pay = paymentClient.pay(PAYMENT_MAPPER.buildCreatePaymentRequest(createOrderRequest, orderEntity, totalAmount));
+            circuitBreakerFactory.create("paymentService").run(
+                    () -> paymentClient.pay(PAYMENT_MAPPER.buildCreatePaymentRequest(createOrderRequest, orderEntity, totalAmount)),
+                    throwable -> {
+                        logger.error("Payment failed : {}", throwable.getMessage());
+                        throw new CustomFeignException("Payment service failed ");
+                    }
+            );
+            orderEntity.setStatus(APPROVED);
         } catch (CustomFeignException e) {
-            logger.error("Payment failed with body: {}", e.getMessage(), e);
+            logger.error("Order failed with body: {}", e.getMessage());
             orderEntity.setStatus(REJECTED);
         }
         orderRepository.save(orderEntity);
@@ -68,9 +100,17 @@ public class OrderServiceHandler implements OrderService {
                 .orElseThrow(() -> new NotFoundException(
                         format(ErrorMessage.ORDER_NOT_FOUND.getMessage(), id)));
         logger.info("order entity : {}", orderEntity.getId());
-        var productResponse = productClient.getProductById(orderEntity.getProductId());
+//        var productResponse = productClient.getProductById(orderEntity.getProductId());
+        var productResponse = circuitBreakerFactory.create("productService").run(
+                () -> productClient.getProductById(orderEntity.getProductId()),
+                throwable -> null
+        );
         logger.info("product : {}", productResponse);
-        var paymentResponse = paymentClient.getPaymentByOrderId(orderEntity.getId());
+//        var paymentResponse = paymentClient.getPaymentByOrderId(orderEntity.getId());
+        var paymentResponse = circuitBreakerFactory.create("paymentService").run(
+                () -> paymentClient.getPaymentByOrderId(orderEntity.getId()),
+                throwable -> null
+        );
         logger.info("payment : {}", paymentResponse);
         return ORDER_MAPPER.buildOrderResponse(
                 orderEntity,

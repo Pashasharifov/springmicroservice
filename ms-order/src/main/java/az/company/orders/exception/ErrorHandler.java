@@ -24,6 +24,13 @@ public class ErrorHandler {
                 .message(exception.getBindingResult().getFieldError().getDefaultMessage())
                 .build();
     }
+    @ExceptionHandler(CustomFeignException.class)
+    @ResponseStatus(SERVICE_UNAVAILABLE)
+    public ErrorResponse handle(CustomFeignException exception){
+        return ErrorResponse.builder()
+                .message(exception.getMessage())
+                .build();
+    }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(INTERNAL_SERVER_ERROR)

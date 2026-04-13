@@ -10,9 +10,11 @@ spring:
     config:
       enabled: false
     gateway:
-      discovery:
-        locator:
-          enabled: true
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
 
 eureka:
   instance:
@@ -24,3 +26,12 @@ eureka:
 logging:
   level:
     org.springframework.cloud.gateway: DEBUG
+springdoc:
+  swagger-ui:
+    urls:
+      - name: ms-order
+        url: /orders/v3/api-docs
+      - name: ms-product
+        url: /products/v3/api-docs
+      - name: ms-payment
+        url: /payments/v3/api-docs
