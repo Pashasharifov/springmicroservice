@@ -1,0 +1,28 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: ms-auth
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ms-product
+    username: postgres
+    password: pasha
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+  config:
+    import: configserver:http://localhost:8888
+
+management:
+  tracing:
+    sampling:
+      probability: 0.0
+jwt:
+  secret: YjEyNGYwNTRkZDA2NDJlYWIwYTM2YzkwMmE1ZmQxNDY=
+  expiration: 86400000

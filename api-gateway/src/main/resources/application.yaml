@@ -35,3 +35,5 @@ springdoc:
         url: /products/v3/api-docs
       - name: ms-payment
         url: /payments/v3/api-docs
+jwt:
+  secret: YjEyNGYwNTRkZDA2NDJlYWIwYTM2YzkwMmE1ZmQxNDY=
