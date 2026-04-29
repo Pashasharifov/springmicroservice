@@ -11,13 +11,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(
         name = "ms-product",
-        url = "http://127.0.0.1:8083/v1/products",
         configuration = CustomErrorDescoder.class
 )
 public interface ProductClient {
-    @PostMapping("/reduce-quantity")
+    @PostMapping("/v1/products/reduce-quantity")
     void reduceQuantity(@RequestBody ReduceQuantityRequest reduceQuantityRequest);
 
-    @GetMapping("/{id}")
+    @GetMapping("/v1/products/{id}")
     public ProductResponse getProductById(@PathVariable Long id);
 }

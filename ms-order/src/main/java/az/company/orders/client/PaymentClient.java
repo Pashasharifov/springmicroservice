@@ -11,13 +11,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(
         name = "ms-payment",
-        url = "http://localhost:8082/v1/payments",
         configuration = CustomErrorDescoder.class
 )
 public interface PaymentClient {
-    @PostMapping
+    @PostMapping("/v1/payments")
     PaymentResponse pay(@RequestBody CreatePaymentRequest createPaymentRequest);
 
-    @GetMapping("/order/{orderId}")
+    @GetMapping("/v1/payments/order/{orderId}")
     PaymentResponse getPaymentByOrderId(@PathVariable Long orderId);
 }

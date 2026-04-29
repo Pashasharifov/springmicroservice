@@ -2,9 +2,9 @@ spring:
   application:
     name: ms-payment
   datasource:
-    url: jdbc:postgresql://127.0.0.1:5432/ms-product
-    username: postgres
-    password: pasha
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/ms-product}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:pasha}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -13,7 +13,7 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
   config:
-    import: configserver:http://localhost:8888
+    import: configserver:${SPRING_CLOUD_CONFIG_URI:http://localhost:8888}
 server:
   port: 8082
 management:
