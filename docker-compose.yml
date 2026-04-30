@@ -148,10 +148,39 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9091:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - microservice-network
+    depends_on:
+      - ms-order
+      - ms-product
+      - ms-payment
+      - ms-auth
+      - api-gateway
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana-data:/var/lib/grafana
+    networks:
+      - microservice-network
+    depends_on:
+      - prometheus
 networks:
   microservice-network:
     driver: bridge
 
 volumes:
   postgres-data:
+  grafana-data:

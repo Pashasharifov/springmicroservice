@@ -23,6 +23,16 @@ management:
   tracing:
     sampling:
       probability: 0.0
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      application: ${spring.application.name}
 jwt:
   secret: YjEyNGYwNTRkZDA2NDJlYWIwYTM2YzkwMmE1ZmQxNDY=
   expiration: 86400000

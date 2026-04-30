@@ -28,3 +28,14 @@ springdoc:
         url: /payments/v3/api-docs
 jwt:
   secret: YjEyNGYwNTRkZDA2NDJlYWIwYTM2YzkwMmE1ZmQxNDY=
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      application: ${spring.application.name}
